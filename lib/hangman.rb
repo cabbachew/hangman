@@ -1,25 +1,26 @@
+# To-do:
+# - Save functionality (i.e. word, board, remaining guesses, past guesses)
+#   - File naming protocol
 puts "Hangman initialized."
 
 class Hangman
-
   def initialize(word_pool)
     # Generate and store answer in array
     @answer = word_pool.sample.split("") 
     @remaining_guesses = answer.length
-    # * Reconcile raw_board and board
-    @raw_board = answer.map {|c| "_"}
-    @board = answer.map {|c| "_"}.join("  ")
+    # * Initialize empty board as an array
+    @board = answer.map {|c| "_"}
+    @past_guesses = []
   end
   attr_reader :answer, :remaining_guesses
-  attr_accessor :board, :raw_board
+  attr_accessor :board
 
   def play
     puts "The answer is: #{answer.join("")}" # temporary
     print_board # Start with empty board
 
-    while raw_board != answer do
+    while board != answer && remaining_guesses > 0 do
       guess = get_player_guess
-      puts "You guessed: #{guess}"
 
       # Check guess
       if answer.include?(guess)
@@ -39,14 +40,14 @@ class Hangman
   def update_board(guess)
     answer.each_with_index do |char, index|
       if guess == char
-        @raw_board[index] = char
+        @board[index] = char
       end
     end
-    puts raw_board.join("  ")
+    puts board.join("  ")
   end
 
   def print_board
-    puts @board
+    puts @board.join("  ")
   end
 
   def print_remaining_guesses(remaining_guesses)
@@ -61,14 +62,17 @@ class Hangman
       print"Pick a valid letter: "
       guess = gets.chomp.downcase
     end
+    puts "You guessed: #{guess}"
     return guess
   end
 end
 
+# Read all words from text file
 all_words = File.readlines('google-10000-english-no-swears.txt').map(&:chomp)
-
+# Create pool of words within character range (5-12)
 word_pool = all_words.select do |word|
   word.length >= 5 && word.length <= 12
 end
 
+# Play game
 Hangman.new(word_pool).play
