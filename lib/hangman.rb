@@ -61,12 +61,12 @@ class Hangman
     guess = gets.chomp.downcase
     # Prompt for valid guess
     until guess.match(/[a-z]/) && guess.length == 1 do
+      # Enable save
+      if guess == "save"
+        puts "Saving..."
+      end
       print "Pick a valid letter: "
       guess = gets.chomp.downcase
-      # Easter egg
-      if guess.include?("fuck")
-        puts "Fuck you brah, how about get gud instead?"
-      end
     end
     while @past_guesses.include?(guess)
       puts "Past guesses: #{@past_guesses.join(" | ")}"
