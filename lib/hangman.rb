@@ -6,6 +6,7 @@ class Hangman
     # Generate and store answer in array
     @answer = word_pool.sample.split("") 
     @remaining_guesses = answer.length
+    # * Reconcile raw_board and board
     @raw_board = answer.map {|c| "_"}
     @board = answer.map {|c| "_"}.join("  ")
   end
@@ -16,16 +17,13 @@ class Hangman
     puts "The answer is: #{answer.join("")}" # temporary
     print_board # Start with empty board
 
-    while board.split != answer do
+    while raw_board != answer do
       guess = get_player_guess
       puts "You guessed: #{guess}"
 
       # Check guess
       if answer.include?(guess)
         puts "THERE WAS A MATCH!"
-        # X Board state must be saved by remapping the board while
-        # checking against same index in answer
-        @board = answer.map {|c| c == guess ? c : "_"}.join("  ")
         update_board(guess)
         print_board
       else
