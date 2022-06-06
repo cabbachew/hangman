@@ -7,8 +7,8 @@ class Hangman
   def initialize(word_pool)
     # Generate and store answer in array
     @answer = word_pool.sample.split("") 
-    puts "The answer is: #{@answer.join("")}" # temporary
-    @remaining_guesses = @answer.length
+    # puts "The answer is: #{@answer.join("")}" # Cheat mode
+    @remaining_attempts = 6
     # * Initialize empty board as an array
     @board = @answer.map {|c| "_"}
     @past_guesses = []
@@ -17,19 +17,19 @@ class Hangman
   def play
     print_board # Start with empty board
 
-    while @board != @answer && @remaining_guesses > 0 do
+    while @board != @answer && @remaining_attempts > 0 do
       guess = get_player_guess
-      @remaining_guesses -= 1 # Decrement remaining guesses
       # Check guess
       if @answer.include?(guess)
         puts "THERE WAS A MATCH!"
         update_board(guess)
       else
         puts "WRONG GUESS!"
+        @remaining_attempts -= 1 # Decrement remaining guesses
       end
 
       print_board
-      print_remaining_guesses(@remaining_guesses)
+      print_remaining_attempts(@remaining_attempts)
       puts
     end
     if @board == @answer
@@ -49,10 +49,11 @@ class Hangman
 
   def print_board
     puts @board.join("  ")
+    puts
   end
 
-  def print_remaining_guesses(remaining_guesses)
-    puts "Guesses remaining: #{remaining_guesses}"
+  def print_remaining_attempts(remaining_attempts)
+    puts "Attempts remaining: #{remaining_attempts}"
   end
 
   def get_player_guess
@@ -60,8 +61,12 @@ class Hangman
     guess = gets.chomp.downcase
     # Prompt for valid guess
     until guess.match(/[a-z]/) && guess.length == 1 do
-      print"Pick a valid letter: "
+      print "Pick a valid letter: "
       guess = gets.chomp.downcase
+      # Easter egg
+      if guess.include?("fuck")
+        puts "Fuck you brah, how about get gud instead?"
+      end
     end
     while @past_guesses.include?(guess)
       puts "Past guesses: #{@past_guesses.join(" | ")}"
