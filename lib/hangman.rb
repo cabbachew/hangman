@@ -14,23 +14,23 @@ class Hangman
   end
   attr_reader :answer, :remaining_guesses
 
-# # Store answer in an array
-# ans_array = answer.split("")
-
-# # Print "__" for each letter in answer array
-# puts ans_array.map {|c| "__"}.join("  ")
-
-# # Set number of guesses to letter count
-# remaining_guesses = ans_array.length
-
   def play
+    # Print "__" for each letter in answer array
+    puts answer.map {|c| "_"}.join("  ")
+
     guess = get_player_guess
-    @remaining_guesses -= 1
     puts "You guessed: #{guess}"
 
+    # Check guess
+    if answer.include?(guess)
+      puts "THERE WAS A MATCH!"
+      puts answer.map {|c| c == guess ? guess : "_"}.join("  ")
+    end
+
+    @remaining_guesses -= 1
     print_remaining_guesses(@remaining_guesses)
 
-    puts "The answer is: #{answer}"
+    puts "The answer was: #{answer.join("")}"
   end
 
   def print_remaining_guesses(remaining_guesses)
@@ -39,7 +39,13 @@ class Hangman
 
   def get_player_guess
     print "Pick a letter: "
-    return gets.chomp.downcase
+    guess = gets.chomp.downcase
+    # Prompt for valid guess
+    until guess.match(/[a-z]/) && guess.length == 1 do
+      print"Pick a valid letter: "
+      guess = gets.chomp.downcase
+    end
+    return guess
   end
 end
 
