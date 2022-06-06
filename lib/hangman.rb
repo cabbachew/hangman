@@ -4,10 +4,10 @@
 puts "Hangman initialized."
 
 class Hangman
+
   def initialize(word_pool)
     # Generate and store answer in array
     @answer = word_pool.sample.split("") 
-    # puts "The answer is: #{@answer.join("")}" # Cheat mode
     @remaining_attempts = 6
     # * Initialize empty board as an array
     @board = @answer.map {|c| "_"}
