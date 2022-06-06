@@ -26,12 +26,16 @@ class Hangman
         update_board(guess)
       else
         puts "WRONG GUESS!"
-        
       end
 
       print_board
       print_remaining_guesses(@remaining_guesses)
       puts
+    end
+    if @board == @answer
+      puts "You win!"
+    else
+      puts "Game over! The answer was #{@answer.join("")}"
     end
   end
 
@@ -80,3 +84,4 @@ end
 
 # Play game
 Hangman.new(word_pool).play
+puts
