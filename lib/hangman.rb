@@ -7,23 +7,21 @@ class Hangman
   def initialize(word_pool)
     # Generate and store answer in array
     @answer = word_pool.sample.split("") 
-    puts "The answer is: #{answer.join("")}" # temporary
-    @remaining_guesses = answer.length
+    puts "The answer is: #{@answer.join("")}" # temporary
+    @remaining_guesses = @answer.length
     # * Initialize empty board as an array
-    @board = answer.map {|c| "_"}
+    @board = @answer.map {|c| "_"}
     @past_guesses = []
   end
-  attr_reader :answer, :remaining_guesses
-  attr_accessor :board, :past_guesses
 
   def play
     print_board # Start with empty board
 
-    while board != answer && remaining_guesses > 0 do
+    while @board != @answer && @remaining_guesses > 0 do
       guess = get_player_guess
       @remaining_guesses -= 1 # Decrement remaining guesses
       # Check guess
-      if answer.include?(guess)
+      if @answer.include?(guess)
         puts "THERE WAS A MATCH!"
         update_board(guess)
       else
@@ -38,7 +36,7 @@ class Hangman
   end
 
   def update_board(guess)
-    answer.each_with_index do |char, index|
+    @answer.each_with_index do |char, index|
       if guess == char
         @board[index] = char
       end
@@ -61,13 +59,13 @@ class Hangman
       print"Pick a valid letter: "
       guess = gets.chomp.downcase
     end
-    while past_guesses.include?(guess)
-      puts "Past guesses: #{past_guesses.join(" | ")}"
+    while @past_guesses.include?(guess)
+      puts "Past guesses: #{@past_guesses.join(" | ")}"
       print "Guess something new: "
       guess = gets.chomp.downcase
     end
 
-    past_guesses << guess
+    @past_guesses << guess
     puts "You guessed: #{guess}"
     return guess
   end
