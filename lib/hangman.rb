@@ -95,7 +95,7 @@ class Hangman
     Dir.mkdir('saved') unless Dir.exist?('saved')
     unique_id = Time.now.strftime("%y%m%d%H%M%S")
     filename = "saved/#{unique_id}.yaml"
-    File.open(filename, 'w') {| file| file.write YAML.dump(game) }
+    File.open(filename, 'w') { |file| file.write YAML.dump(game) }
   end
 
   def load_game
