@@ -1,0 +1,21 @@
+--- !ruby/object:Hangman
+answer:
+- p
+- a
+- t
+- i
+- e
+- n
+- t
+- s
+remaining_attempts: 6
+board:
+- _
+- _
+- _
+- _
+- _
+- _
+- _
+- _
+past_guesses: []

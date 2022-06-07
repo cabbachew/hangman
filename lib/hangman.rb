@@ -1,7 +1,18 @@
 # To-do:
-# - Save functionality (i.e. word, board, remaining guesses, past guesses)
-#   - File naming protocol
-puts "Hangman initialized."
+# - Refactor
+# - Implement new game / load game
+# - Implement quit game
+# - Enable user to create filename
+#   * Currently using Time.now to generate unique id
+# - Enable file rewriting during save
+# * Review: https://github.com/andrewjh271/hangman
+# ✓ Colorize output text: https://github.com/fazibear/colorize
+
+require 'time'
+require 'yaml'
+require_relative 'colorize'
+
+puts "Hangman initialized.".light_blue
 
 class Hangman
 
@@ -21,10 +32,10 @@ class Hangman
       guess = get_player_guess
       # Check guess
       if @answer.include?(guess)
-        puts "THERE WAS A MATCH!"
+        puts "THERE WAS A MATCH!".green
         update_board(guess)
       else
-        puts "WRONG GUESS!"
+        puts "WRONG GUESS!".red
         @remaining_attempts -= 1 # Decrement remaining guesses
       end
 
@@ -33,9 +44,9 @@ class Hangman
       puts
     end
     if @board == @answer
-      puts "You win!"
+      puts "You win!".green
     else
-      puts "Game over! The answer was #{@answer.join("")}"
+      puts "Game over! The answer was #{@answer.join("")}".red
     end
   end
 
@@ -64,12 +75,13 @@ class Hangman
       # Enable save
       if guess == "save"
         puts "Saving..."
+        save_game(self)
       end
       print "Pick a valid letter: "
       guess = gets.chomp.downcase
     end
     while @past_guesses.include?(guess)
-      puts "Past guesses: #{@past_guesses.join(" | ")}"
+      puts "Past guesses: #{@past_guesses.join(" | ")}".yellow
       print "Guess something new: "
       guess = gets.chomp.downcase
     end
@@ -77,6 +89,31 @@ class Hangman
     @past_guesses << guess
     puts "You guessed: #{guess}"
     return guess
+  end
+
+  def save_game(game)
+    Dir.mkdir('saved') unless Dir.exist?('saved')
+    unique_id = Time.now.strftime("%y%m%d%H%M%S")
+    filename = "saved/#{unique_id}.yaml"
+    File.open(filename, 'w') {| file| file.write YAML.dump(game) }
+  end
+
+  def load_game
+    begin
+      filenames = Dir.glob('saved/*').map do |file| 
+        file[(file.index('/') + 1)...(file.index('.'))]
+      end
+      puts "Saved games:"
+      puts filenames
+      filename = gets.chomp
+      raise "#{filename} does not exist." unless filenames.include?(filename)
+      puts "Loading #{filename}..."
+      loaded_game = YAML.load(File.read("saved/#{filename}.yaml"))
+      loaded_game.play
+    rescue StandardError => e
+      puts e
+      retry
+    end
   end
 end
 
@@ -90,3 +127,7 @@ end
 # Play game
 Hangman.new(word_pool).play
 puts
+
+# Load game
+# Hangman.new(word_pool).load_game
+# puts
